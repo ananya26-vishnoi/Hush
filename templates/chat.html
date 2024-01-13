@@ -1,0 +1,189 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Meta tags  -->
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta name="viewport" content="width=1024">
+
+    <!-- Title Tag -->
+    <title>Elara</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/elara.png' %}">
+
+    <!-- CSS Link -->
+    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Actor&family=Roboto:wght@300;400&display=swap"
+        rel="stylesheet">
+
+    <!-- AJAX -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <section id="all_folders">
+        <div class="center">
+            <div id="second_section_heading">My Assistant <img src="{% static 'images/exclaim.png' %}" alt=""></div>
+            <div id="search_div">
+                <img src="{% static 'images/search.png'%}" alt="">
+                <input type="text" id="Search" placeholder="Search for chats...">
+            </div>
+            <button onclick="open_new_doc_modal()"> <span>+</span> Start new Chat</button>
+        </div>
+        <div id="all_folders_and_files_outer">
+            <div id="all_folders_and_files">
+
+            </div>
+        </div>
+        <div id="name" onclick="open_user_modal()"></div>
+    </section>
+    
+    <section id="chatbox">
+        <div id="chat_heading">
+            <div id="chat_name_img">
+                <img src="{% static 'images/folder.png' %}" alt="">
+                <div id="chat_heading_name"></div>
+            </div>
+            <div id="chat_heading_options">
+                <img onclick="opensettings()" src="{% static 'images/menu.png' %}" alt="">
+            </div>
+        </div>
+        <div id="message_field_outer">
+            <div id="message_field_inner">
+            </div>
+        </div>
+        <div id="message_send_outer">
+            <input type="text" id="message_send" placeholder="Enter your question">
+            <img onclick="message_handler()" src="{% static 'images/send.png' %}" alt="">
+        </div>
+    </section>
+    
+    <section id="chat_settings">
+        <div id="close_button">
+            <img onclick="closesettings()" src="{% static 'images/close.png' %}" alt="">
+        </div>
+        <div id="chat_settings_top">
+            <img src="{% static 'images/folder_bigger.png' %}" alt="" id="chat_settings_folder">
+            <p id="chat_settings_name"></p>
+        </div>
+
+        <div id="file_list">
+            <p id="files">Files<span id="filecount"></span></p>
+            <div id="outer_filelist">
+                <div id="filelist_names">
+
+                </div>
+            </div>
+        </div>
+
+        <div id="options_file_list">
+            <button>Add Contents</button>
+            <button class="important" onclick="clear_conversation()">Clear Conversation</button>
+            <button class="important">Delete Contents</button>
+        </div>
+    </section>
+
+    <section id="add_files_modal">
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>Start new chat</h2>
+                </div>
+                <div class="modal-body">
+                    <p>Select Unstructured data source</p>
+                    <div id="options_for_upload">
+                        <button onclick="set_upload_type('document')">Documents</button>
+                        <button onclick="set_upload_type('folder')">Folder</button>
+                    </div>
+                    <div id="upload_document">
+                        <p>Upload Document</p>
+                        <input type="file" accept=".txt, .doc, .docx, .pdf, .xlsx, .csv" id="file">
+                    </div>
+                    <div id="upload_folder">
+                        <p>Upload Folder</p>
+                        <input type="file" name="folder" id="folder" webkitdirectory directory multiple />
+                    </div>
+                </div>
+                <div class="modal-footer" id="show_next_div">
+                    <img onclick="show_next()" src="{% static 'images/arrow_right.png' %}" alt="">
+                </div>
+                <div class="modal-footer" id="upload_files_div">
+                    <img onclick="upload_files()" src="{% static 'images/arrow_right.png' %}" alt="">
+                </div>
+                <div class="modal-footer" id="upload_folder_div">
+                    <img onclick="upload_folder()" src="{% static 'images/arrow_right.png' %}" alt="">
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section id="user_modal">
+        <div id="userModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content" id="userModalContent">
+                <div class="modal-header">
+                    <img id="user_modal_img" src="{% static 'images/user_header_modal.png' %}" alt="">
+                </div>
+                <div class="modal-body" id="user_modal_body">
+                    <div id="short_name_user_modal">{{name_abbr}}</div>
+                    <div id="full_name_user_modal">{{user.username}}</div>
+                    <div id="options_user_modal">
+                        <div class="option_user_modal">
+                            <img src="{% static 'images/logout.png' %}" alt="">
+                            <a href="logout">Log out</a>
+                        </div>
+                        <div class="option_user_modal">
+                            <img src="{% static 'images/settings.png' %}" alt="">
+                            <a href="">Settings</a>
+                        </div>
+                        <div class="option_user_modal">
+                            <img id="helpimg" src="{% static 'images/help.png' %}" alt="">
+                            <a href="">Help</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- loader -->
+    <div id="loading" class="loading">Loading&#8230;</div>
+
+    <!-- toast -->
+    <div id="toast">
+        <div id="img"><img id="wrong_img" src="{% static 'images/wrong.svg' %}" alt=""></div>
+        <div id="desc"></div>
+    </div>
+
+    <div id="toast_correct">
+        <div id="img_correct"><img id="right_img" src="{% static 'images/right.svg' %}" alt=""></div>
+        <div id="desc_correct"></div>
+    </div>
+
+    <input type="hidden" name="" id="shortname" value="{{name_abbr}}">
+    <input type="hidden" name="" id="fullname" value="{{user.username}}">
+    <input type="hidden" id="chat_list_data" value="">
+    <input type="hidden" name="" id="upload_type">
+    <input type="hidden" id="email" value="{{user.email}}">
+    <input type="hidden" id="active_chat" value="">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{csrf_token}}" readonly required>
+    <script src="{% static 'js/chat.js' %}"></script>
+
+    
+</body>
+
+
+</html>
